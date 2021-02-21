@@ -11,18 +11,7 @@ public class Beer implements Parcelable {
     private String imageUrl;
     private String description;
     private String foodPairing;
-
-    public static Creator<Beer> getCREATOR() {
-        return CREATOR;
-    }
-
     private String brewsterTips;
-
-    public boolean isFavorite() {
-        return favorite;
-    }
-
-    private boolean favorite;
 
     protected Beer(Parcel in) {
         name = in.readString();
@@ -84,7 +73,7 @@ public class Beer implements Parcelable {
         this.description = description;
         this.foodPairing = foodPairing;
         this.brewsterTips = brewsterTips;
-        favorite = false;
+
     }
 
 
@@ -102,7 +91,6 @@ public class Beer implements Parcelable {
         dest.writeString(description);
         dest.writeString(foodPairing);
         dest.writeString(brewsterTips);
-
 
     }
 }

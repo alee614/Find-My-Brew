@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,7 +29,7 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.ViewHolder> {
         TextView textView_name;
         TextView textView_description;
         ImageView imageView_beer;
-        ImageButton imageButton;
+        ToggleButton toggleButton;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -36,8 +37,7 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.ViewHolder> {
             textView_name = itemView.findViewById(R.id.textView_name);
             textView_description = itemView.findViewById(R.id.textView_description);
             imageView_beer = itemView.findViewById(R.id.imageView_beer);
-            imageView_beer.setOnClickListener(this);
-            imageButton.setOnClickListener(this);
+
 
         }
 

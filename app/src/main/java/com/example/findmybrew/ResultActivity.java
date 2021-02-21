@@ -31,7 +31,7 @@ public class ResultActivity extends AppCompatActivity {
         beersInfo = intent.getParcelableArrayListExtra("value");
 
         //results.setText(R.string.you_have + beersInfo.size() + R.string.results);
-        BeerAdapter adapter = new BeerAdapter(beersInfo);
+        BeerAdapter adapter = new BeerAdapter(beersInfo, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
