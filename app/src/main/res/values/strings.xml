@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Find My Brew</string>
+    <string name="catchphrase">Cracking Open a Cold One?</string>
+    <string name="search">BREW ME</string>
+    <string name="go">Search by beer name</string>
+    <string name="brewed">Brewed</string>
+    <string name="date">mm/yyyy</string>
+    <string name="highpoint">High-Point Beer?</string>
+    <string name="to">to</string>
+    <string name="title_activity_item_info">ItemInfoActivity</string>
+    <string name="you_have">You have </string>
+    <string name="results"> results.</string>
+
+</resources>
