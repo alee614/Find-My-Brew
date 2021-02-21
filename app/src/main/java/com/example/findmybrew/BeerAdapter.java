@@ -1,6 +1,7 @@
 package com.example.findmybrew;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +20,13 @@ import java.util.List;
 
 public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.ViewHolder> {
 
-    private ArrayList<Beer> Beers;
+    private List<Beer> Beers;
+    private List<Beer> favorites;
+
     public BeerAdapter(ArrayList<Beer> Beers, Context context){
         this.Beers = Beers;
+        this.favorites = new ArrayList<>();
+
     }
 
     // inner class to specify the custom viewHolder
@@ -29,7 +34,8 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.ViewHolder> {
         TextView textView_name;
         TextView textView_description;
         ImageView imageView_beer;
-        ToggleButton toggleButton;
+        ImageButton imageButton;
+
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -37,13 +43,27 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.ViewHolder> {
             textView_name = itemView.findViewById(R.id.textView_name);
             textView_description = itemView.findViewById(R.id.textView_description);
             imageView_beer = itemView.findViewById(R.id.imageView_beer);
+            imageButton = itemView.findViewById(R.id.imageButton);
+            imageButton.setOnClickListener(this);
 
+            imageView_beer.setOnClickListener(this);
 
         }
 
         @Override
         public void onClick(View v) {
+            // when imageButton is clicked, add to the arrayList
+            int selected = getAdapterPosition();
+            Beer selectedB = Beers.get(selected);
 
+            if (favorites.contains(selectedB)){
+                favorites.remove(selectedB);
+            }
+            else{
+                favorites.add(selectedB);
+            }
+
+            notifyDataSetChanged();
         }
     }
 
@@ -67,8 +87,13 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.ViewHolder> {
         holder.textView_name.setText(beer.getName());
         holder.textView_description.setText(beer.getDescription());
         Picasso.get().load(beer.getImageUrl()).into(holder.imageView_beer);
-        // set up intent
-
+        if (favorites.contains(beer)){
+            holder.imageButton.setPressed(true);
+            Log.d("this is the button", Beers.get(position).getName());
+        }
+        else{
+            holder.imageButton.setSelected(false);
+        }
 
     }
 

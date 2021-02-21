@@ -46,7 +46,6 @@ public class SearchActivity extends AppCompatActivity {
     private static final String api_url = "https://api.punkapi.com/v2/beers";
     AsyncHttpClient client = new AsyncHttpClient();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,15 +54,11 @@ public class SearchActivity extends AppCompatActivity {
         go = findViewById(R.id.button_search);
 
         inputBefore = findViewById(R.id.textInput_before);
-        inputAfter = findViewById(R.id.textInput_before);
+        inputAfter = findViewById(R.id.textInput_after);
         inputName = findViewById(R.id.textInput_name);
         highPoint = findViewById(R.id.switch1);
         beers = new ArrayList<>();
 
-
-        checkDate("01/1980");
-        checkDate("15/2010");
-        checkDate("10/1999");
         highPoint.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked){
                 abv = true;
@@ -81,20 +76,13 @@ public class SearchActivity extends AppCompatActivity {
             // if it exists then pass it thro to make sure its in correct format with method
             // check for both before and after separately
             // if they both exist then if checkBeer and true -> searchBeer(v)
-            date_before = Objects.requireNonNull(inputBefore.getText().toString());
-            date_after = Objects.requireNonNull(inputAfter.getText().toString());
+            String before = Objects.requireNonNull(inputBefore.getText()).toString();
+            String after = Objects.requireNonNull(inputAfter.getText()).toString();
 
-            // three if statements
-            // only pass thro to searchBeer if they are valid so it's ok to valid
-            //
-            if (date_after.isEmpty() && date_before.isEmpty()){
-                Log.d("dates", "are empty");
-                searchBeer(v);
-            }
 
-            if (!date_before.isEmpty() && (!date_after.isEmpty())){
-                if (checkDate(date_before) && checkDate(date_after)){
-                    if (compareDate(date_before, date_after)){
+            if ((!before.isEmpty()) && (!after.isEmpty())){
+                if (checkDate(before) && checkDate(after)){
+                    if (compareDate(before, after)){
                         searchBeer(v);
                     }
                 }
@@ -102,21 +90,25 @@ public class SearchActivity extends AppCompatActivity {
                     wrongDate(v);
                 }
             }
-            if (!date_before.isEmpty() && date_after.isEmpty()){
-                if (checkDate(date_before)) {
+            if ((!before.isEmpty()) && (after.isEmpty())){
+                if (checkDate(before)) {
                     searchBeer(v);
                 }
                 else{
                     wrongDate(v);
                 }
             }
-            if (date_before.isEmpty() && !date_after.isEmpty()) {
-                if (checkDate(date_after)) {
+            if ((!after.isEmpty()) && before.isEmpty()) {
+                if (checkDate(after)) {
                     searchBeer(v);
                 }
                 else{
                     wrongDate(v);
                 }
+            }
+            if (after.isEmpty() && before.isEmpty()){
+                Log.d("dates", "are empty");
+                searchBeer(v);
             }
 
             //Log.d("abv/d: ", String.valueOf(abv));
@@ -133,12 +125,15 @@ public class SearchActivity extends AppCompatActivity {
         Intent intent = new Intent(SearchActivity.this, ResultActivity.class);
         RequestParams params = new RequestParams();
         search =  Objects.requireNonNull(inputName.getText()).toString();
+        date_before = Objects.requireNonNull(inputBefore.getText()).toString();
+        date_after = Objects.requireNonNull(inputAfter.getText()).toString();
+
 
         Log.d("searchBeer", " is clicked");
 
         // check if the inputName is not null, then grab and add to param as beer_name
         if (!search.isEmpty()){
-            Log.d("search string: ", search);
+            //Log.d("search string: ", search);
             params.put("beer_name", search);
         }
         // check if the abv is true, add 3.99 to abv_gt
@@ -163,15 +158,15 @@ public class SearchActivity extends AppCompatActivity {
                         JSONObject json = list.getJSONObject(i);
 
                         String name = json.getString("name");
-                        Log.d("name", name);
+                        //Log.d("name", name);
                         int abv = json.getInt("abv");
-                        Log.d("abv", String.valueOf(abv));
+                        //Log.d("abv", String.valueOf(abv));
                         String brewedDate = json.getString("first_brewed");
-                        Log.d("brewedDate", brewedDate);
+                        //Log.d("brewedDate", brewedDate);
                         String imageUrl = json.getString("image_url");
-                        Log.d("imageUrl", imageUrl);
+                        //Log.d("imageUrl", imageUrl);
                         String description = json.getString("description");
-                        Log.d("description", description);
+                        //Log.d("description", description);
 
                         JSONArray foodPairingsList = json.getJSONArray("food_pairing");
                         String foodPairings = "";
@@ -183,10 +178,10 @@ public class SearchActivity extends AppCompatActivity {
                                 foodPairings = foodPairings + foodPairingsList.get(j) + ", ";
                             }
                         }
-                        Log.d("food pairings", foodPairings);
+                        //Log.d("food pairings", foodPairings);
 
                         String brewersTips = json.getString("brewers_tips");
-                        Log.d("brewer's tips", brewersTips);
+                        //Log.d("brewer's tips", brewersTips);
 
                         Beer beerObject = new Beer(name, abv, brewedDate, imageUrl, description, foodPairings, brewersTips);
                         beers.add(beerObject);
@@ -222,11 +217,12 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void wrongRange(View view){
-        Toast.makeText(this, "Your range is invalid.", Toast.LENGTH_SHORT);
+        Toast.makeText(this, "Your range is invalid.", Toast.LENGTH_SHORT).show();
     }
 
     public void wrongDate(View view){
-        Toast.makeText(this, "Please fix your date", Toast.LENGTH_SHORT);
+        Toast.makeText(this, "Please fix your date", Toast.LENGTH_SHORT).show();
+
     }
 
 
