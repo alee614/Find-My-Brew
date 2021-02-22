@@ -1,8 +1,12 @@
 package com.example.findmybrew;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -16,6 +20,9 @@ public class ResultActivity extends AppCompatActivity {
     private TextView results;
     private RecyclerView recyclerView;
     private ArrayList<Beer> beersInfo;
+    private BeerAdapter adapter;
+
+    private SearchView searchView;
 
 
     @Override
@@ -35,10 +42,42 @@ public class ResultActivity extends AppCompatActivity {
         String size = Integer.toString(beersInfo.size());
 
         results.setText(getString(R.string.returnResults, beersInfo.size()));
-        BeerAdapter adapter = new BeerAdapter(beersInfo, this);
+        adapter = new BeerAdapter(beersInfo, this);
+
+        Log.d("adapter", String.valueOf(adapter.getItemCount()));
+
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = findViewById(R.id.searchView);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
 
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.getFilter().filter(query);
+                results.setText(getString(R.string.returnResults, adapter.getItemCount()));
+                Log.d("adapter size", String.valueOf(adapter.getItemCount()));
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                results.setText(getString(R.string.returnResults, adapter.getItemCount()));
+                Log.d("adapter size", String.valueOf(adapter.getItemCount()));
+                return false;
+            }
+        });
+    }
+
+    public void onBackPress(){
+        if(!searchView.isIconified()) {
+            searchView.setIconified(true);
+            return;
+        }
+        super.onBackPressed();
     }
 }

@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,17 +18,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.ViewHolder> {
+public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.ViewHolder> implements Filterable {
 
     private List<Beer> Beers;
     private List<Beer> favorites;
+    private List<Beer> beerListFiltered;
 
     public BeerAdapter(ArrayList<Beer> Beers, Context context){
         this.Beers = Beers;
         this.favorites = new ArrayList<>();
+        this.beerListFiltered = new ArrayList<>();
 
     }
 
@@ -103,9 +108,40 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.ViewHolder> {
 
     }
 
-
     @Override
     public int getItemCount() {
         return Beers.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter(){
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String charString = constraint.toString();
+                if (charString.isEmpty()) {
+                    beerListFiltered = Beers;
+                } else {
+                    List<Beer> filteredList = new ArrayList<>();
+                    for (Beer row : Beers) {
+                        if (row.getName().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(row);
+                        }
+                    }
+                    beerListFiltered = filteredList;
+                }
+                FilterResults results = new FilterResults();
+                results.values = beerListFiltered;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                Beers = (ArrayList<Beer>) results.values;
+
+                notifyDataSetChanged();
+            }
+        };
+    }
+
 }
