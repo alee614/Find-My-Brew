@@ -1,6 +1,7 @@
 package com.example.findmybrew;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,8 +47,6 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.ViewHolder> {
             imageButton = itemView.findViewById(R.id.imageButton);
             imageButton.setOnClickListener(this);
 
-            imageView_beer.setOnClickListener(this);
-
         }
 
         @Override
@@ -62,7 +61,6 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.ViewHolder> {
             else{
                 favorites.add(selectedB);
             }
-
             notifyDataSetChanged();
         }
     }
@@ -92,10 +90,19 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.ViewHolder> {
             Log.d("this is the button", Beers.get(position).getName());
         }
         else{
-            holder.imageButton.setSelected(false);
+            holder.imageButton.setPressed(false);
         }
 
+        holder.imageView_beer.setOnClickListener(v -> {
+            Context context = v.getContext();
+            Intent intent = new Intent(context, ItemInfoActivity.class);
+            intent.putExtra("beerItem", beer);
+            Log.d("beer image click", beer.getName());
+            context.startActivity(intent);
+        });
+
     }
+
 
     @Override
     public int getItemCount() {

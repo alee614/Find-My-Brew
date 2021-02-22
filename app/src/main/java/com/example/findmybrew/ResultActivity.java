@@ -2,6 +2,7 @@ package com.example.findmybrew;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -29,8 +30,11 @@ public class ResultActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         beersInfo = intent.getParcelableArrayListExtra("value");
+        Log.d("beersInfo", String.valueOf(beersInfo.size()));
 
-        //results.setText(R.string.you_have + beersInfo.size() + R.string.results);
+        String size = Integer.toString(beersInfo.size());
+
+        results.setText(getString(R.string.returnResults, beersInfo.size()));
         BeerAdapter adapter = new BeerAdapter(beersInfo, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
