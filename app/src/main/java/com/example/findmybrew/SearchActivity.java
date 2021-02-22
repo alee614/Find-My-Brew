@@ -1,8 +1,10 @@
 package com.example.findmybrew;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -20,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -46,6 +49,7 @@ public class SearchActivity extends AppCompatActivity {
     private static final String api_url = "https://api.punkapi.com/v2/beers";
     AsyncHttpClient client = new AsyncHttpClient();
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +72,7 @@ public class SearchActivity extends AppCompatActivity {
                 abv = false;
                 Log.d("clicked", String.valueOf(abv));
             }
+
         });
 
         go.setOnClickListener(v -> {
@@ -82,12 +87,12 @@ public class SearchActivity extends AppCompatActivity {
 
             if ((!before.isEmpty()) && (!after.isEmpty())){
                 if (checkDate(before) && checkDate(after)){
-                    if (compareDate(before, after)){
+                    if (compareDate(after, before)){
                         searchBeer(v);
                     }
-                }
-                else {
-                    wrongDate(v);
+                    else{
+                        wrongRange(v);
+                    }
                 }
             }
             if ((!before.isEmpty()) && (after.isEmpty())){
@@ -128,8 +133,6 @@ public class SearchActivity extends AppCompatActivity {
         date_before = Objects.requireNonNull(inputBefore.getText()).toString();
         date_after = Objects.requireNonNull(inputAfter.getText()).toString();
 
-
-        Log.d("searchBeer", " is clicked");
 
         // check if the inputName is not null, then grab and add to param as beer_name
         if (!search.isEmpty()){
@@ -209,11 +212,30 @@ public class SearchActivity extends AppCompatActivity {
         return b;
     }
 
-    public boolean compareDate(String dateBefore, String dateAfter){
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public boolean compareDate(String dateAfter, String dateBefore){
         // parse thro each into correct date format
         // compareTo
 
-        return true;
+        // what is correct "date" format first
+        // 09/2020
+        int month_after = Integer.parseInt(dateAfter.substring(0, 2));
+        Log.d("month", String.valueOf(month_after));
+        int year_after = Integer.parseInt(dateAfter.substring(3));
+        Log.d("year", String.valueOf(year_after));
+
+        int month_before = Integer.parseInt(dateBefore.substring(0,2));
+        int year_before = Integer.parseInt(dateBefore.substring(3));
+        YearMonth after = YearMonth.of(year_after, month_after);
+        YearMonth before = YearMonth.of(year_before, month_before);
+        int output = after.compareTo(before);
+        Log.d("output", String.valueOf(output));
+        if (output < 0){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     public void wrongRange(View view){
